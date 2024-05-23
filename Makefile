@@ -1,7 +1,12 @@
+BINARY := "pik"
+
 default: build
 
 build:
-	go build -o pik ./app
+	go build -o $(BINARY) ./app
+
+run: build
+	./$(BINARY)
 
 fmt:
 	go fmt ./...
