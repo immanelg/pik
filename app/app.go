@@ -40,7 +40,7 @@ func (self *app) loop() {
 	self.screen = screen
 	self.termX, self.termY = self.screen.Size()
 
-	// do not leave terminal in weird state
+	// do not leave terminal in a weird state
 	cleanup := func() {
 		err := recover()
 		screen.Fini()
