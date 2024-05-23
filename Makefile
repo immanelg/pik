@@ -13,3 +13,7 @@ fmt:
 
 test:
 	go test -v ./...
+
+clean:
+	rm $(BINARY)
+	go clean
