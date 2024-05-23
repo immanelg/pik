@@ -128,17 +128,8 @@ func (self *app) drawSelectedColor(x int, y int) {
 		tcell.NewRGBColor(int32(self.rgb.r), int32(self.rgb.g), int32(self.rgb.b))).Foreground(
 		tcell.NewRGBColor(int32(inverted.r), int32(inverted.g), int32(inverted.b)))
 
-	for {
-		if x > 9 {
-			break
-		}
-		self.screen.SetContent(x, y, ' ', nil, style)
-		x += 1
-	}
-
-	self.screen.SetContent(x, y, ' ', nil, tcell.StyleDefault)
 	for _, c := range colorHex {
-		self.screen.SetContent(x, y, c, nil, tcell.StyleDefault)
+		self.screen.SetContent(x, y, c, nil, style)
 		x += 1
 	}
 }
