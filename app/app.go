@@ -20,7 +20,7 @@ type app struct {
 	rgb           rgb
 	mode          Mode
 	currentSlider int
-	printOnExit bool
+	printOnExit   bool
 }
 
 func newApp(initialColor rgb) app {
