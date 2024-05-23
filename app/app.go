@@ -61,51 +61,64 @@ func (self *app) loop() {
 		self.screen.Show()
 
 		ev := self.screen.PollEvent()
-
-		switch ev := ev.(type) {
-		case *tcell.EventResize:
-			self.termX, self.termY = ev.Size()
-			self.screen.Sync()
-		case *tcell.EventKey:
-			if ev.Rune() == 'q' || ev.Key() == tcell.KeyCtrlC {
-				return
-			} else if ev.Rune() == 'h' {
-				switch self.currentSlider {
-				case 0:
-					self.rgb.r = max(0, self.rgb.r-1)
-				case 1:
-					self.rgb.g = max(0, self.rgb.g-1)
-				case 2:
-					self.rgb.b = max(0, self.rgb.b-1)
-				}
-			} else if ev.Rune() == 'l' {
-				switch self.currentSlider {
-				case 0:
-					self.rgb.r = min(255, self.rgb.r+1)
-				case 1:
-					self.rgb.g = min(255, self.rgb.g+1)
-				case 2:
-					self.rgb.b = min(255, self.rgb.b+1)
-				}
-			} else if ev.Rune() == 'j' {
-				self.currentSlider = min(2, self.currentSlider+1)
-			} else if ev.Rune() == 'k' {
-				self.currentSlider = max(0, self.currentSlider-1)
-			} else if ev.Key() == tcell.KeyCtrlL {
-				self.screen.Sync()
-			} else if ev.Key() == tcell.KeyEnter {
-				self.printOnExit = true
-				return
-			}
-
-		case *tcell.EventMouse:
-			switch ev.Buttons() {
-			case tcell.Button1, tcell.Button2:
-			case tcell.ButtonNone:
-			}
+		quit := self.handleEvent(ev)
+		if quit {
+			break
 		}
 	}
 }
+
+func (self *app) handleEvent(ev tcell.Event) (quit bool) {
+	switch ev := ev.(type) {
+	case *tcell.EventResize:
+		self.termX, self.termY = ev.Size()
+		self.screen.Sync()
+	case *tcell.EventKey:
+		if ev.Rune() == 'q' || ev.Key() == tcell.KeyCtrlC {
+			quit = true
+		} else if ev.Key() == tcell.KeyEnter {
+			self.printOnExit = true
+			quit = true
+		} else if ev.Rune() == 'h' {
+			switch self.currentSlider {
+			case 0:
+				self.rgb.r = max(0, self.rgb.r-1)
+			case 1:
+				self.rgb.g = max(0, self.rgb.g-1)
+			case 2:
+				self.rgb.b = max(0, self.rgb.b-1)
+			}
+		} else if ev.Rune() == 'l' {
+			switch self.currentSlider {
+			case 0:
+				self.rgb.r = min(255, self.rgb.r+1)
+			case 1:
+				self.rgb.g = min(255, self.rgb.g+1)
+			case 2:
+				self.rgb.b = min(255, self.rgb.b+1)
+			}
+		} else if ev.Rune() == 'j' {
+			self.currentSlider = min(2, self.currentSlider+1)
+		} else if ev.Rune() == 'k' {
+			self.currentSlider = max(0, self.currentSlider-1)
+		} else if ev.Key() == tcell.KeyCtrlL {
+			self.screen.Sync()
+		}
+
+	case *tcell.EventMouse:
+		switch ev.Buttons() {
+		case tcell.Button1, tcell.Button2:
+		case tcell.ButtonNone:
+		}
+	}
+	return
+}
+
+type slider struct {
+	perc float32
+}
+
+type styleGetter func(value int) tcell.Style
 
 func (self *app) drawSelectedColor(x int, y int) {
 	colorHex := rgbToHex(self.rgb)
