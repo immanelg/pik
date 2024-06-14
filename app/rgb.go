@@ -1,4 +1,4 @@
-package main
+package app
 
 type rgb struct {
 	r, g, b int64

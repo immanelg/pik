@@ -1,12 +1,14 @@
-BINARY := "pik"
 
 default: build
 
 build:
-	go build -o $(BINARY) ./app
+	go build
 
 run: build
-	./$(BINARY)
+	./pik
+
+install:
+	go install
 
 fmt:
 	go fmt ./...
@@ -15,5 +17,5 @@ test:
 	go test -v ./...
 
 clean:
-	rm $(BINARY)
+	rm -f ./pik
 	go clean

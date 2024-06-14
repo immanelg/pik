@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"flag"
@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func main() {
+func Run() {
 	var initialColor string
 	flag.StringVar(&initialColor, "hex", "", "initial color to edit (hex)")
 	flag.Parse()
