@@ -5,7 +5,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-func (self *app) shiftSliders(n int64) {
+func (self *app) shiftSlider(n int64) {
 	switch self.currentSlider {
 	case 0:
 		self.rgb.r = min(255, max(0, self.rgb.r+n))
@@ -37,17 +37,17 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 			self.printOnExit = true
 			quit = true
 		case ev.Rune() == 'h':
-			self.shiftSliders(-1)
+			self.shiftSlider(-1)
 		case ev.Rune() == 'l':
-			self.shiftSliders(+1)
+			self.shiftSlider(+1)
 		case ev.Rune() == 'b':
-			self.shiftSliders(-8)
+			self.shiftSlider(-8)
 		case ev.Rune() == 'w':
-			self.shiftSliders(+8)
+			self.shiftSlider(+8)
 		case ev.Rune() == '[':
-			self.shiftSliders(-256)
+			self.shiftSlider(-256)
 		case ev.Rune() == ']':
-			self.shiftSliders(+256)
+			self.shiftSlider(+256)
 		case ev.Rune() == 'j':
 			self.downSlider()
 		case ev.Rune() == 'k':
