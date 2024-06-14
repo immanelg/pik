@@ -67,4 +67,3 @@ func (self *app) loop() {
 		}
 	}
 }
-

@@ -1,7 +1,7 @@
 package app
 
 import (
-    "fmt"
+	"fmt"
 	"github.com/gdamore/tcell/v2"
 )
 
@@ -88,29 +88,33 @@ func (self *app) drawSelectedColor(x int, y int) {
 	}
 }
 
-func (self *app) drawSliders(x, y int) {
-	var rText = "R: " + fmt.Sprintf("%03d", self.rgb.r) + " "
-	var gText = "G: " + fmt.Sprintf("%03d", self.rgb.g) + " "
-	var bText = "B: " + fmt.Sprintf("%03d", self.rgb.b) + " "
-	self.drawText(x, y, rText)
-	self.drawText(x, y+1, gText)
-	self.drawText(x, y+2, bText)
+func (self *app) drawSlider(x, y int, currentValue int, prefix string, getStyle func(x int) tcell.Style) {
+	self.drawText(x, y, prefix)
 
-	for x := x; x <= 64; x++ {
-		xScaled := int32(x * 4)
-		style := tcell.StyleDefault
-		self.screen.SetContent(x+len(rText), y, ' ', nil, style.Background(tcell.NewRGBColor(xScaled, 0, 0)))
-		self.screen.SetContent(x+len(gText), y+1, ' ', nil, style.Background(tcell.NewRGBColor(0, xScaled, 0)))
-		self.screen.SetContent(x+len(bText), y+2, ' ', nil, style.Background(tcell.NewRGBColor(0, 0, xScaled)))
+	offset := x+len(prefix)
+	for i := 0; i <= 64; i++ {
+		if i == currentValue {
+			self.screen.SetContent(offset+i, y, '+', nil, tcell.StyleDefault)
+		} else {
+			self.screen.SetContent(offset+i, y, ' ', nil, getStyle(i))
+		}
 	}
+}
 
-	redCursor := int32(self.rgb.r / 4)
-	greenCursor := int32(self.rgb.g / 4)
-	blueCursor := int32(self.rgb.b / 4)
-	style := tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack)
-	self.screen.SetContent(x+len(rText)+int(redCursor), y, 'X', nil, style)
-	self.screen.SetContent(x+len(gText)+int(greenCursor), y+1, 'X', nil, style)
-	self.screen.SetContent(x+len(bText)+int(blueCursor), y+2, 'X', nil, style)
+func (self *app) drawSliders(x, y int) {
+	self.drawSlider(x, y, int(self.rgb.r/4), "R: "+fmt.Sprintf("%03d", self.rgb.r)+" ", func(i int) tcell.Style {
+		return tcell.StyleDefault.Background(tcell.NewRGBColor(int32(i*4), 0, 0))
+	})
+	self.drawSlider(x, y+1, int(self.rgb.g/4), "G: "+fmt.Sprintf("%03d", self.rgb.g)+" ", func(i int) tcell.Style {
+		return tcell.StyleDefault.Background(tcell.NewRGBColor(0, int32(i*4), 0))
+	})
+	self.drawSlider(x, y+2, int(self.rgb.b/4), "G: "+fmt.Sprintf("%03d", self.rgb.g)+" ", func(i int) tcell.Style {
+		return tcell.StyleDefault.Background(tcell.NewRGBColor(0, 0, int32(i*4)))
+	})
+
+	// self.drawSlider(x, y, int(self.rgb.r/4), "R: "+fmt.Sprintf("%03d", self.rgb.r)+" ", func(i int, displayedLength int) tcell.Style {
+	// 	return tcell.StyleDefault.Background(tcell.NewRGBColor(int32(i * 256/displayedLength), 0, 0))
+	// })
 }
 
 func (self *app) draw() {
