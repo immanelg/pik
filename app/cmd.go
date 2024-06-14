@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
 )
 
 func Run() {
@@ -18,7 +17,6 @@ func Run() {
 		initialRgb, err = hexToRgb(initialColor)
 		if err != nil {
 			log.Fatalf("cannot parse HEX color: %s\n", err)
-			os.Exit(1)
 		}
 	}
 
