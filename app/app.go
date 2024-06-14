@@ -93,24 +93,24 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 		self.termX, self.termY = ev.Size()
 		self.screen.Sync()
 	case *tcell.EventKey:
-    	switch {
+		switch {
 		case ev.Rune() == 'q' || ev.Key() == tcell.KeyCtrlC:
 			quit = true
 		case ev.Key() == tcell.KeyEnter:
 			self.printOnExit = true
 			quit = true
 		case ev.Rune() == 'h':
-    		self.shiftSliders(-1) 
+			self.shiftSliders(-1)
 		case ev.Rune() == 'l':
-    		self.shiftSliders(1) 
+			self.shiftSliders(1)
 		case ev.Rune() == 'H':
-    		self.shiftSliders(-8) 
+			self.shiftSliders(-8)
 		case ev.Rune() == 'L':
-    		self.shiftSliders(8) 
+			self.shiftSliders(8)
 		case ev.Rune() == 'j':
-    		self.downSlider()
+			self.downSlider()
 		case ev.Rune() == 'k':
-    		self.upSlider()
+			self.upSlider()
 		case ev.Key() == tcell.KeyCtrlL:
 			self.screen.Sync()
 		}

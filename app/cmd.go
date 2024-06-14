@@ -12,7 +12,7 @@ func Run() {
 	flag.StringVar(&initialColor, "hex", "", "initial color to edit (hex)")
 	flag.Parse()
 
-	initialRgb := whiteRgb()
+	var initialRgb rgb
 	if initialColor != "" {
 		var err error
 		initialRgb, err = hexToRgb(initialColor)

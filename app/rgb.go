@@ -12,9 +12,7 @@ func (self rgb) inverted() rgb {
 	}
 }
 
-func whiteRgb() rgb {
-	return rgb{255, 255, 255}
-}
+var white = rgb{255, 255, 255}
 
 type rgba struct {
 	rgb
