@@ -88,7 +88,7 @@ func (self *app) drawSelectedColor(x int, y int) {
 	}
 }
 
-func (self *app) drawSlider(x, y int, currentValue int, prefix string, getStyle func(x int) tcell.Style) {
+func (self *app) drawSlider(x, y int, currentValue int, prefix string, getStyle func(int) tcell.Style) {
 	self.drawText(x, y, prefix)
 
 	offset := x+len(prefix)
