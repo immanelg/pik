@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gdamore/tcell/v2"
@@ -128,13 +129,22 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 	return
 }
 
+func (self *app) drawText(x int, y int, text string) {
+	style := tcell.StyleDefault
+	for _, c := range text {
+		self.screen.SetContent(x, y, c, nil, style)
+		x++
+	}
+}
+
 func (self *app) drawSelectedColor(x int, y int) {
 	colorHex := rgbToHex(self.rgb)
 
-	inverted := self.rgb.inverted()
-	style := tcell.StyleDefault.Background(
-		tcell.NewRGBColor(int32(self.rgb.r), int32(self.rgb.g), int32(self.rgb.b))).Foreground(
-		tcell.NewRGBColor(int32(inverted.r), int32(inverted.g), int32(inverted.b)))
+	style := tcell.StyleDefault.Background(tcell.NewRGBColor(int32(self.rgb.r), int32(self.rgb.g), int32(self.rgb.b))).Foreground(tcell.ColorBlack)
+
+	const currentColorText = "current: "
+	self.drawText(x, y, currentColorText)
+	x += len(currentColorText)
 
 	for _, c := range colorHex {
 		self.screen.SetContent(x, y, c, nil, style)
@@ -143,21 +153,28 @@ func (self *app) drawSelectedColor(x int, y int) {
 }
 
 func (self *app) drawSliders(x, y int) {
+	var rText = "R: " + fmt.Sprintf("%03d", self.rgb.r) + " "
+	var gText = "G: " + fmt.Sprintf("%03d", self.rgb.g) + " "
+	var bText = "B: " + fmt.Sprintf("%03d", self.rgb.b) + " "
+	self.drawText(x, y, rText)
+	self.drawText(x, y+1, gText)
+	self.drawText(x, y+2, bText)
+
 	for x := x; x <= 64; x++ {
 		xScaled := int32(x * 4)
 		style := tcell.StyleDefault
-		self.screen.SetContent(x, y, ' ', nil, style.Background(tcell.NewRGBColor(xScaled, 0, 0)))
-		self.screen.SetContent(x, y+1, ' ', nil, style.Background(tcell.NewRGBColor(0, xScaled, 0)))
-		self.screen.SetContent(x, y+2, ' ', nil, style.Background(tcell.NewRGBColor(0, 0, xScaled)))
+		self.screen.SetContent(x+len(rText), y, ' ', nil, style.Background(tcell.NewRGBColor(xScaled, 0, 0)))
+		self.screen.SetContent(x+len(gText), y+1, ' ', nil, style.Background(tcell.NewRGBColor(0, xScaled, 0)))
+		self.screen.SetContent(x+len(bText), y+2, ' ', nil, style.Background(tcell.NewRGBColor(0, 0, xScaled)))
 	}
 
 	redCursor := int32(self.rgb.r / 4)
 	greenCursor := int32(self.rgb.g / 4)
 	blueCursor := int32(self.rgb.b / 4)
-	style := tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorDefault)
-	self.screen.SetContent(x+int(redCursor), y, 'X', nil, style.Foreground(tcell.NewRGBColor(redCursor, 0, 0)))
-	self.screen.SetContent(x+int(greenCursor), y+1, 'X', nil, style.Foreground(tcell.NewRGBColor(0, greenCursor, 0)))
-	self.screen.SetContent(x+int(blueCursor), y+2, 'X', nil, style.Foreground(tcell.NewRGBColor(0, 0, blueCursor)))
+	style := tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack)
+	self.screen.SetContent(x+len(rText)+int(redCursor), y, 'X', nil, style)
+	self.screen.SetContent(x+len(gText)+int(greenCursor), y+1, 'X', nil, style)
+	self.screen.SetContent(x+len(bText)+int(blueCursor), y+2, 'X', nil, style)
 }
 
 func (self *app) draw() {
