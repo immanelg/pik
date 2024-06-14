@@ -79,6 +79,13 @@ func (self *app) shiftSliders(n int64) {
 	}
 }
 
+func (self *app) downSlider() {
+	self.currentSlider = min(2, self.currentSlider+1)
+}
+
+func (self *app) upSlider() {
+	self.currentSlider = max(0, self.currentSlider-1)
+}
 
 func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 	switch ev := ev.(type) {
@@ -86,24 +93,25 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 		self.termX, self.termY = ev.Size()
 		self.screen.Sync()
 	case *tcell.EventKey:
-		if ev.Rune() == 'q' || ev.Key() == tcell.KeyCtrlC {
+    	switch {
+		case ev.Rune() == 'q' || ev.Key() == tcell.KeyCtrlC:
 			quit = true
-		} else if ev.Key() == tcell.KeyEnter {
+		case ev.Key() == tcell.KeyEnter:
 			self.printOnExit = true
 			quit = true
-		} else if ev.Rune() == 'h' {
+		case ev.Rune() == 'h':
     		self.shiftSliders(-1) 
-		} else if ev.Rune() == 'l' {
+		case ev.Rune() == 'l':
     		self.shiftSliders(1) 
-		} else if ev.Rune() == 'H' {
+		case ev.Rune() == 'H':
     		self.shiftSliders(-8) 
-		} else if ev.Rune() == 'L' {
+		case ev.Rune() == 'L':
     		self.shiftSliders(8) 
-		} else if ev.Rune() == 'j' {
-			self.currentSlider = min(2, self.currentSlider+1)
-		} else if ev.Rune() == 'k' {
-			self.currentSlider = max(0, self.currentSlider-1)
-		} else if ev.Key() == tcell.KeyCtrlL {
+		case ev.Rune() == 'j':
+    		self.downSlider()
+		case ev.Rune() == 'k':
+    		self.upSlider()
+		case ev.Key() == tcell.KeyCtrlL:
 			self.screen.Sync()
 		}
 
