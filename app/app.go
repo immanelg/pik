@@ -102,11 +102,15 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 		case ev.Rune() == 'h':
 			self.shiftSliders(-1)
 		case ev.Rune() == 'l':
-			self.shiftSliders(1)
-		case ev.Rune() == 'H':
+			self.shiftSliders(+1)
+		case ev.Rune() == 'b':
 			self.shiftSliders(-8)
-		case ev.Rune() == 'L':
-			self.shiftSliders(8)
+		case ev.Rune() == 'w':
+			self.shiftSliders(+8)
+		case ev.Rune() == '[':
+			self.shiftSliders(-256)
+		case ev.Rune() == ']':
+			self.shiftSliders(+256)
 		case ev.Rune() == 'j':
 			self.downSlider()
 		case ev.Rune() == 'k':
