@@ -108,7 +108,7 @@ func (self *app) drawSliders(x, y int) {
 	self.drawSlider(x, y+1, int(self.rgb.g/4), "G: "+fmt.Sprintf("%03d", self.rgb.g)+" ", func(i int) tcell.Style {
 		return tcell.StyleDefault.Background(tcell.NewRGBColor(0, int32(i*4), 0))
 	})
-	self.drawSlider(x, y+2, int(self.rgb.b/4), "G: "+fmt.Sprintf("%03d", self.rgb.g)+" ", func(i int) tcell.Style {
+	self.drawSlider(x, y+2, int(self.rgb.b/4), "G: "+fmt.Sprintf("%03d", self.rgb.b)+" ", func(i int) tcell.Style {
 		return tcell.StyleDefault.Background(tcell.NewRGBColor(0, 0, int32(i*4)))
 	})
 
