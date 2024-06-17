@@ -5,22 +5,39 @@ import (
 )
 
 func TestHexToRgb(t *testing.T) {
-	expect := "#00CED1"
-	got := rgbToHex(rgb{0, 206, 209})
-
-	if got != expect {
-		t.Errorf("got %s, expect %s", got, expect)
+	testCases := []struct {
+		input  string
+		expect rgb
+	}{
+		{"#00CED1", rgb{0, 206, 209}},
+		{"#348217", rgb{52, 130, 23}},
 	}
+
+	for _, tc := range testCases {
+		result, err := hexToRgb(tc.input)
+		if result != tc.expect {
+			t.Errorf("input %v, expect: %v, got: %v", tc.input, tc.expect, result)
+		}
+		if err != nil {
+			t.Errorf("input %v, got err: %v", tc.input, err)
+		}
+	}
+
 }
 
 func TestRgbToHex(t *testing.T) {
-	expect := rgb{0, 206, 209}
-	got, err := hexToRgb("#00CED1")
-
-	if err != nil {
-		t.Fatal(err)
+	testCases := []struct {
+		input  rgb
+		expect string
+	}{
+		{rgb{0, 206, 209}, "#00CED1"},
+		{rgb{52, 130, 23}, "#348217"},
 	}
-	if got != expect {
-		t.Errorf("got %v, expect %v", got, expect)
+
+	for _, tc := range testCases {
+		result := rgbToHex(tc.input)
+		if result != tc.expect {
+			t.Errorf("input %v, expect: %v, got: %v", tc.input, tc.expect, result)
+		}
 	}
 }
