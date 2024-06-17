@@ -6,31 +6,29 @@ import (
 	"strconv"
 )
 
-func hexToRgb(s string) (rgb rgb, err error) {
+func hexToRgb(s string) (rgb, error) {
 	if len(s) != 7 {
-		err = errors.New("len of hex != 7")
-		return
+		err := errors.New("len of hex != 7")
+		return rgb{}, err
 	}
 	if s[0] != '#' {
-		err = errors.New("hex first char is not '#'")
-		return
+		err := errors.New("hex first char is not '#'")
+		return rgb{}, err
 	}
-	r, err := strconv.ParseInt(string(s[1:3]), 16, 16)
+	s = s[1:]
+
+	number, err := strconv.ParseUint(s, 16, 32)
 	if err != nil {
-		return
+		return rgb{}, err
 	}
-	g, err := strconv.ParseInt(string(s[3:5]), 16, 16)
-	if err != nil {
-		return
-	}
-	b, err := strconv.ParseInt(string(s[5:7]), 16, 16)
-	if err != nil {
-		return
-	}
-	rgb.r, rgb.g, rgb.b = r, g, b
-	return
+
+	return rgb{
+		r: int(number >> 16 & 0xFF),
+		g: int(number >> 8 & 0xFF),
+		b: int(number & 0xFF),
+	}, nil
 }
 
-func rgbToHex(rgb rgb) (s string) {
+func rgbToHex(rgb rgb) (hex string) {
 	return fmt.Sprintf("#%02X%02X%02X", rgb.r, rgb.g, rgb.b)
 }
