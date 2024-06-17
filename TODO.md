@@ -1,0 +1,6 @@
+- [ ] More modes: RGBA, HSL, HWB
+- [ ] Different outputs like rgb(...), hsl(...), #HEX, etc
+- [ ] Better ui (like adjustable length of sliders)
+- [ ] Save colors
+- [ ] Paste from clipboard
+- [ ] Copy to clipboard
