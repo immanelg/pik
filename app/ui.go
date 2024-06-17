@@ -8,11 +8,11 @@ import (
 func (self *app) shiftSlider(n int64) {
 	switch self.currentSlider {
 	case 0:
-		self.rgb.r = min(255, max(0, self.rgb.r+n))
+		self.rgb.r = clamp(self.rgb.r+n, 0, 255)
 	case 1:
-		self.rgb.g = min(255, max(0, self.rgb.g+n))
+		self.rgb.g = clamp(self.rgb.g+n, 0, 255)
 	case 2:
-		self.rgb.b = min(255, max(0, self.rgb.b+n))
+		self.rgb.b = clamp(self.rgb.b+n, 0, 255)
 	}
 }
 
