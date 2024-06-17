@@ -19,7 +19,7 @@ func Run() {
 			log.Fatalf("cannot parse HEX color: %s\n", err)
 		}
 	} else {
-		initialRgb = white
+		initialRgb = blackRgb
 	}
 
 	app := newApp(initialRgb)

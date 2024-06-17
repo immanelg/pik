@@ -103,13 +103,13 @@ func (self *app) drawSlider(x, y int, currentValue int, prefix string, getStyle 
 
 func (self *app) drawSliders(x, y int) {
 	self.drawSlider(x, y, int(self.rgb.r/4), "R: "+fmt.Sprintf("%03d", self.rgb.r)+" ", func(i int) tcell.Style {
-		return tcell.StyleDefault.Background(tcell.NewRGBColor(int32(i*4), 0, 0))
+		return tcell.StyleDefault.Background(tcell.NewRGBColor(int32(i*4), int32(self.rgb.g), int32(self.rgb.b)))
 	})
 	self.drawSlider(x, y+1, int(self.rgb.g/4), "G: "+fmt.Sprintf("%03d", self.rgb.g)+" ", func(i int) tcell.Style {
-		return tcell.StyleDefault.Background(tcell.NewRGBColor(0, int32(i*4), 0))
+		return tcell.StyleDefault.Background(tcell.NewRGBColor(int32(self.rgb.r),  int32(i*4), int32(self.rgb.b)))
 	})
 	self.drawSlider(x, y+2, int(self.rgb.b/4), "G: "+fmt.Sprintf("%03d", self.rgb.b)+" ", func(i int) tcell.Style {
-		return tcell.StyleDefault.Background(tcell.NewRGBColor(0, 0, int32(i*4)))
+		return tcell.StyleDefault.Background(tcell.NewRGBColor(int32(self.rgb.r), int32(self.rgb.g), int32(i*4)))
 	})
 
 	// self.drawSlider(x, y, int(self.rgb.r/4), "R: "+fmt.Sprintf("%03d", self.rgb.r)+" ", func(i int, displayedLength int) tcell.Style {
