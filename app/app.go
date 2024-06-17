@@ -50,7 +50,7 @@ func (self *app) loop() {
 	}
 	defer cleanup()
 
-	defaultStyle := tcell.StyleDefault.Background(tcell.ColorBlack).Foreground(tcell.ColorWhite)
+	defaultStyle := tcell.StyleDefault
 
 	self.screen.SetStyle(defaultStyle)
 	self.screen.EnableMouse()
