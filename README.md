@@ -12,6 +12,7 @@ go install github.com/immanelg/pik
 # Usage
 ## Flags
 - `-hex string`: initial color
+- `-logfile /dev/null`: log debug messages to file
 
 ## Keybindings
 
@@ -21,3 +22,4 @@ go install github.com/immanelg/pik
 - `o`: cycle output mode (RGB, HEX, HSL)
 - `enter`: quit and print current color
 - `q`: quit
+- `<c-l>`: redraw
