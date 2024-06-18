@@ -83,6 +83,7 @@ func (self *color) nextValue(n int) {
 	// }
 	switch self.inputMode {
 	case rgbInputMode:
+		// self.rgbSliders[self.currentSlider].slide(n)?
 		switch self.currentSlider {
 		case 0:
 			self.rgb.r = clamp(self.rgb.r+n, 0, 255)
