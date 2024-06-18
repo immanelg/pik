@@ -15,13 +15,13 @@ func (self *app) drawText(x int, y int, text string, style tcell.Style) {
 }
 
 func (self *app) drawOutput(x int, y int) {
-	const currentColorText = "output: "
-	self.drawText(x, y, currentColorText, tcell.StyleDefault)
-	x += len(currentColorText)
+	const outputTxt = "output: "
+	self.drawText(x, y, outputTxt, tcell.StyleDefault)
+	x += len(outputTxt)
 
 	output := self.color.getOutput()
 
-	r, g, b := self.color.rgb.triple()
+	r, g, b := self.color.currentAsRgb().triple()
 	style := tcell.StyleDefault.Background(tcell.NewRGBColor(int32(r), int32(g), int32(b))).Foreground(tcell.ColorBlack)
 
 	self.drawText(x, y, output, style)
