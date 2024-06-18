@@ -96,7 +96,7 @@ func (self *color) changeSliderValue(n int) {
 	case hslInputMode:
 		switch self.currentSlider {
 		case 0:
-			self.hsl.h = clamp(self.hsl.h+n, 0, 365)
+			self.hsl.h = clamp(self.hsl.h+n, 0, 360)
 		case 1:
 			self.hsl.s = clamp(self.hsl.s+n, 0, 100)
 		case 2:

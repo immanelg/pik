@@ -61,8 +61,8 @@ func (self *app) drawSliders(x, y int) {
 	case hslInputMode:
 		h, s, l := self.color.hsl.triple()
 
-		self.drawSlider(x, y, int(h*64/365), fmt.Sprintf("H: %03d ", h), func(i int) tcell.Style {
-			h, s, l := hslToRgb(hsl{i * 365 / 64, s, l}).triple()
+		self.drawSlider(x, y, int(h*64/360), fmt.Sprintf("H: %03d ", h), func(i int) tcell.Style {
+			h, s, l := hslToRgb(hsl{i * 360 / 64, s, l}).triple()
 			style := tcell.NewRGBColor(int32(h), int32(s), int32(l))
 			return tcell.StyleDefault.Background(style)
 		})

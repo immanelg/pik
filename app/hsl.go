@@ -1,7 +1,7 @@
 package app
 
 type hsl struct {
-	h int // 0..365
+	h int // 0..360
 	s int // 0..100
 	l int // 0.100
 }
