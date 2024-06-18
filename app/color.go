@@ -128,16 +128,18 @@ func (self *color) cycleOutputMode() {
 
 func (self *color) getOutput() string {
 	rgb := self.currentAsRgb()
-
 	switch self.outputMode {
 	case hexOutputMode:
 		return rgbToHex(rgb)
 	case rgbOutputMode:
-		return "rgb(...)"
-		// return rgbString() // TODO
+		return rgbCssString(rgb)
 	case hslOutputMode:
-		return "hsl(...)"
-		// return hslString() // TODO
+		hsl := self.hsl
+		if self.inputMode != hslInputMode {
+			// in this case color.hsl is not set
+			hsl = rgbToHsl(rgb)
+		}
+		return hslCssString(hsl)
 	default:
 		log.Panicf("unexpected outputMode %v", self.outputMode)
 	}

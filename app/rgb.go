@@ -1,5 +1,7 @@
 package app
 
+import "fmt"
+
 type rgb struct {
 	r int // 0..255
 	g int // 0..255
@@ -9,6 +11,14 @@ type rgb struct {
 type rgba struct {
 	rgb
 	a int // 0..100
+}
+
+var whiteRgb = rgb{255, 255, 255}
+var blackRgb = rgb{0, 0, 0}
+var initRgb = rgb{216, 146, 215}
+
+func rgbCssString(rgb rgb) string {
+	return fmt.Sprintf("rgb(%d %d %d)", rgb.r, rgb.g, rgb.b)
 }
 
 func (self rgb) inverted() rgb {
@@ -22,7 +32,3 @@ func (self rgb) inverted() rgb {
 func (self rgb) triple() (int, int, int) {
 	return self.r, self.g, self.b
 }
-
-var whiteRgb = rgb{255, 255, 255}
-var blackRgb = rgb{0, 0, 0}
-var initRgb = rgb{216, 146, 215}

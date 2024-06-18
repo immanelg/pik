@@ -1,5 +1,7 @@
 package app
 
+import "fmt"
+
 type hsl struct {
 	h int // 0..360
 	s int // 0..100
@@ -11,12 +13,16 @@ type hsla struct {
 	a int // 0..100
 }
 
+func hslCssString(hsl hsl) string {
+	return fmt.Sprintf("hsl(%d %d%% %d%%)", hsl.h, hsl.s, hsl.l)
+}
+
 func (self hsl) triple() (int, int, int) {
 	return self.h, self.s, self.l
 }
 
 func hslToRgb(hsl hsl) rgb {
-	h := float64(hsl.h) / 365.0
+	h := float64(hsl.h) / 360.0
 	s := float64(hsl.s) / 100.0
 	l := float64(hsl.l) / 100.0
 
