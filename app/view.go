@@ -41,37 +41,6 @@ func (self *app) drawSlider(x, y int, selectedIndex int, prefix string, getStyle
 	}
 }
 
-// type slider struct{
-//     currentVal int
-//     cells []tcell.Style
-// }
-
-// func (self *app) drawSlider2(x, y int, selectedIndex int, prefix string, getStyle func(int) tcell.Style) {
-// 	style := tcell.StyleDefault
-// 	self.drawText(x, y, prefix, style)
-
-// 	offset := x + len(prefix)
-// 	for i := 0; i < 64; i++ {
-// 		if i == selectedIndex {
-// 			self.screen.SetContent(offset+i, y, '*', nil, tcell.StyleDefault.Background(tcell.ColorGray))
-// 		} else {
-// 			self.screen.SetContent(offset+i, y, ' ', nil, getStyle(i))
-// 		}
-// 	}
-// }
-
-// hSlider := make([]tcell.Style, 64)
-// for _, style := range hSlider {
-// 	style = style.Background(tcell.NewRGBColor(int32(h/365*64), int32(s), int32(l)))
-// }
-// sSlider := make([]tcell.Style, 64)
-// for _, style := range sSlider {
-// 	style = style.Background(tcell.NewRGBColor(int32(h), int32(s/365*64), int32(l)))
-// }
-// lSlider := make([]tcell.Style, 64)
-// for _, style := range sSlider {
-// 	style = style.Background(tcell.NewRGBColor(int32(h), int32(s), int32(l/365*64)))
-// }
 
 func (self *app) drawSliders(x, y int) {
 	switch self.color.inputMode {
