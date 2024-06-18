@@ -26,8 +26,9 @@ const (
 	hslOutputMode
 )
 
-// Manages the current color state actions.
-// Input modes is synchronized on mode change.
+// Manages the color state.
+// Only the input corresponding to the current input mode is valid.
+// It's synchronized when input mode is changed.
 type color struct {
 	currentSlider int
 
@@ -50,20 +51,8 @@ func (self *color) currentAsRgb() (rgb rgb) {
 	return
 }
 
-func (self *color) cycleInputMode() {
-	switch self.inputMode {
-	case rgbInputMode:
-		self.setInputMode(hslInputMode)
-	case hslInputMode:
-		self.setInputMode(rgbInputMode)
-	default:
-		log.Panicf("unexpected inputMode %v", self.inputMode)
-	}
-}
-
+// Set current input mode and update its value.
 func (self *color) setInputMode(newInputMode inputMode) {
-	// Update the state of the new mode
-	// calculating it from the old one.
 	switch newInputMode {
 	case rgbInputMode:
 		self.rgb = self.currentAsRgb()
@@ -76,7 +65,18 @@ func (self *color) setInputMode(newInputMode inputMode) {
 	self.currentSlider = 0
 }
 
-func (self *color) changeSliderValue(n int) {
+func (self *color) cycleInputMode() {
+	switch self.inputMode {
+	case rgbInputMode:
+		self.setInputMode(hslInputMode)
+	case hslInputMode:
+		self.setInputMode(rgbInputMode)
+	default:
+		log.Panicf("unexpected inputMode %v", self.inputMode)
+	}
+}
+
+func (self *color) nextValue(n int) {
 	// scroll by percent?
 	// if !(perc >= -1 && perc <= 1) {
 	// 	log.Panicf("perc is not in range [-1,1]: %v", perc)
@@ -109,7 +109,7 @@ func (self *color) changeSliderValue(n int) {
 	}
 }
 
-func (self *color) changeCurrentSlider(n int) {
+func (self *color) nextSlider(n int) {
 	self.currentSlider = clamp(self.currentSlider+n, 0, 2)
 }
 
@@ -126,7 +126,7 @@ func (self *color) cycleOutputMode() {
 	}
 }
 
-func (self *color) getOutput() string {
+func (self *color) output() string {
 	rgb := self.currentAsRgb()
 	switch self.outputMode {
 	case hexOutputMode:

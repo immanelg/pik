@@ -18,22 +18,22 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 			quit = true
 
 		case ev.Rune() == 'h':
-			self.color.changeSliderValue(-1)
+			self.color.nextValue(-1)
 		case ev.Rune() == 'l':
-			self.color.changeSliderValue(+1)
+			self.color.nextValue(+1)
 		case ev.Rune() == 'b':
-			self.color.changeSliderValue(-8)
+			self.color.nextValue(-8)
 		case ev.Rune() == 'w':
-			self.color.changeSliderValue(+8)
+			self.color.nextValue(+8)
 		case ev.Rune() == '[':
-			self.color.changeSliderValue(-32)
+			self.color.nextValue(-32)
 		case ev.Rune() == ']':
-			self.color.changeSliderValue(+32)
+			self.color.nextValue(+32)
 
 		case ev.Rune() == 'j':
-			self.color.changeCurrentSlider(+1)
+			self.color.nextSlider(+1)
 		case ev.Rune() == 'k':
-			self.color.changeCurrentSlider(-1)
+			self.color.nextSlider(-1)
 
 		case ev.Rune() == 'i':
 			self.color.cycleInputMode()

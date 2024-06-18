@@ -19,7 +19,7 @@ func (self *app) drawOutput(x int, y int) {
 	self.drawText(x, y, outputTxt, tcell.StyleDefault)
 	x += len(outputTxt)
 
-	output := self.color.getOutput()
+	output := self.color.output()
 
 	r, g, b := self.color.currentAsRgb().triple()
 	style := tcell.StyleDefault.Background(tcell.NewRGBColor(int32(r), int32(g), int32(b))).Foreground(tcell.ColorBlack)

@@ -41,6 +41,6 @@ func Run() {
 	app.loop()
 
 	if app.printOnExit {
-		fmt.Println(app.color.getOutput())
+		fmt.Println(app.color.output())
 	}
 }
