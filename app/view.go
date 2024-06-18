@@ -41,7 +41,6 @@ func (self *app) drawSlider(x, y int, selectedIndex int, prefix string, getStyle
 	}
 }
 
-
 func (self *app) drawSliders(x, y int) {
 	switch self.color.inputMode {
 	case rgbInputMode:
@@ -72,7 +71,7 @@ func (self *app) drawSliders(x, y int) {
 			return tcell.StyleDefault.Background(style)
 		})
 		self.drawSlider(x, y+2, int(l*64/100), fmt.Sprintf("L: %03d ", l), func(i int) tcell.Style {
-			h, s, l := hslToRgb(hsl{h, s, 100 / 64}).triple()
+			h, s, l := hslToRgb(hsl{h, s, l*100/64}).triple()
 			style := tcell.NewRGBColor(int32(h), int32(s), int32(l))
 			return tcell.StyleDefault.Background(style)
 		})
