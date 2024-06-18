@@ -14,9 +14,10 @@ go install github.com/immanelg/pik
 - `-hex string`: initial color
 
 ## Keybindings
-- `h`, `l`: ±1 for current slider
-- `b`, `w`: ±8 for current slider
-- `[`, `]`: min/max for current slider
+
+- `h`, `l`, `b`, `w`, `[`, `]`: change current slider value
 - `j`, `k`: change focused slider
+- `i`: cycle input mode (RGB, HSL)
+- `o`: cycle output mode (RGB, HEX, HSL)
 - `enter`: quit and print current color
 - `q`: quit

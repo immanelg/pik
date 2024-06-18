@@ -1,6 +1,11 @@
-- [ ] More modes: RGBA, HSL, HWB
-- [ ] Different outputs like rgb(...), hsl(...), #HEX, etc
-- [ ] Better ui (like adjustable length of sliders)
+- [ ] Parse any input format instead of just `-hex`
+
+- [ ] Configurable slider length
+- [ ] Configurable keybindings
+- [ ] Configurable ui elements
+
 - [ ] Save colors
-- [ ] Paste from clipboard
-- [ ] Copy to clipboard
+- [ ] Paste color from clipboard
+- [ ] Copy color to clipboard
+
+- [ ] More input/output modes: RGBA, HSLA, HWB
