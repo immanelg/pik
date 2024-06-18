@@ -1,7 +1,14 @@
 package app
 
 type rgb struct {
-	r, g, b int64
+	r int // 0..255
+	g int // 0..255
+	b int // 0.255
+}
+
+type rgba struct {
+	rgb
+	a int // 0..100
 }
 
 func (self rgb) inverted() rgb {
@@ -12,10 +19,10 @@ func (self rgb) inverted() rgb {
 	}
 }
 
+func (self rgb) triple() (int, int, int) {
+	return self.r, self.g, self.b
+}
+
 var whiteRgb = rgb{255, 255, 255}
 var blackRgb = rgb{0, 0, 0}
-
-type rgba struct {
-	rgb
-	a int64
-}
+var initRgb = rgb{216, 146, 215}

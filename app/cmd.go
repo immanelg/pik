@@ -41,6 +41,6 @@ func Run() {
 	app.loop()
 
 	if app.printOnExit {
-		fmt.Println(rgbToHex(app.rgb))
+		fmt.Println(app.color.getOutput())
 	}
 }

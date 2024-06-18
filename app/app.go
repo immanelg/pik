@@ -6,25 +6,18 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-type Mode int8
-
-const (
-	RgbMode Mode = 0
-	HslMode Mode = 1
-)
-
 // application state
 type app struct {
-	screen        tcell.Screen
-	termX, termY  int
-	rgb           rgb
-	mode          Mode
-	currentSlider int
-	printOnExit   bool
+	screen       tcell.Screen
+	termW, termH int
+	color        color
+	printOnExit  bool
 }
 
 func newApp(initialColor rgb) app {
-	return app{rgb: initialColor}
+	return app{
+		color: color{inputMode: rgbInputMode, rgb: initialColor},
+	}
 }
 
 // inits terminal ui and runs event loop.
@@ -38,9 +31,9 @@ func (self *app) loop() {
 	}
 
 	self.screen = screen
-	self.termX, self.termY = self.screen.Size()
+	self.termW, self.termH = self.screen.Size()
 
-	// do not leave terminal in a weird state
+	// restore terminal
 	cleanup := func() {
 		err := recover()
 		screen.Fini()
@@ -57,6 +50,7 @@ func (self *app) loop() {
 	self.screen.Clear()
 
 	for {
+		self.screen.Fill(' ', tcell.StyleDefault)
 		self.draw()
 		self.screen.Show()
 
