@@ -42,8 +42,11 @@ func tcellColor(r int, g int, b int) tcell.Color {
 	return tcell.NewRGBColor(int32(r), int32(g), int32(b))
 }
 
-func (self *app) drawSlider(x, y int, sl slider, getRgbAtIndex func(i int) (int, int, int)) {
+func (self *app) drawSlider(x, y int, sl slider, getRgbAtIndex func(i int) (int, int, int), current bool) {
 	style := tcell.StyleDefault
+	if !current {
+    	style = style.Foreground(tcell.ColorGray) 
+	}
 	self.drawText(x, y, sl.prefix, style)
 	x += len(sl.prefix)
 
@@ -71,19 +74,19 @@ func (self *app) drawSliders(x, y int) {
 		getRgbAtIndex := func(i int) (int, int, int) {
 			return i * (sl.max - sl.min + 1) / sliderLen, g, b
 		}
-		self.drawSlider(x, y, sl, getRgbAtIndex)
+		self.drawSlider(x, y, sl, getRgbAtIndex, self.color.currentSlider == 0)
 
 		sl = slider{min: 0, max: 255, prefix: fmt.Sprintf("G: %03d ", g), current: g}
 		getRgbAtIndex = func(i int) (int, int, int) {
 			return r, i * (sl.max - sl.min + 1) / sliderLen, b
 		}
-		self.drawSlider(x, y+1, sl, getRgbAtIndex)
+		self.drawSlider(x, y+1, sl, getRgbAtIndex, self.color.currentSlider == 1)
 
 		sl = slider{min: 0, max: 255, prefix: fmt.Sprintf("B: %03d ", b), current: b}
 		getRgbAtIndex = func(i int) (int, int, int) {
 			return r, g, i * (sl.max - sl.min + 1) / sliderLen
 		}
-		self.drawSlider(x, y+2, sl, getRgbAtIndex)
+		self.drawSlider(x, y+2, sl, getRgbAtIndex, self.color.currentSlider == 2)
 
 	case hslInputMode:
 		h, s, l := self.color.hsl.triple()
@@ -92,19 +95,19 @@ func (self *app) drawSliders(x, y int) {
 		getRgbAtIndex := func(i int) (int, int, int) {
 			return hslToRgb(hsl{i * (sl.max - sl.min + 1) / sliderLen, s, l}).triple()
 		}
-		self.drawSlider(x, y, sl, getRgbAtIndex)
+		self.drawSlider(x, y, sl, getRgbAtIndex, self.color.currentSlider == 0)
 
 		sl = slider{min: 0, max: 100, prefix: fmt.Sprintf("S: %03d ", s), current: s}
 		getRgbAtIndex = func(i int) (int, int, int) {
 			return hslToRgb(hsl{h, i * (sl.max - sl.min + 1) / sliderLen, l}).triple()
 		}
-		self.drawSlider(x, y+1, sl, getRgbAtIndex)
+		self.drawSlider(x, y+1, sl, getRgbAtIndex, self.color.currentSlider == 1)
 
 		sl = slider{min: 0, max: 100, prefix: fmt.Sprintf("L: %03d ", l), current: l}
 		getRgbAtIndex = func(i int) (int, int, int) {
 			return hslToRgb(hsl{h, s, i * (sl.max - sl.min + 1) / sliderLen}).triple()
 		}
-		self.drawSlider(x, y+2, sl, getRgbAtIndex)
+		self.drawSlider(x, y+2, sl, getRgbAtIndex, self.color.currentSlider == 2)
 
 	default:
 		log.Panicf("unexpected inputMode %v", self.color.inputMode)
