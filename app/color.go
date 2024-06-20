@@ -14,8 +14,8 @@ import (
 type inputMode uint8
 
 const (
-	rgbInputMode = inputMode(iota)
-	hslInputMode
+	rgbInputMode inputMode = 0
+	hslInputMode           = 1
 )
 
 // What will be printed after exiting
@@ -27,128 +27,117 @@ const (
 	hslOutputMode
 )
 
-// Manages the color state.
-// Only the input corresponding to the current input mode is valid.
-// It's synchronized when input mode is changed.
-type color struct {
-	currentSlider int
+type input interface {
+	// constraints for values
+	Max() [3]int
+	Min() [3]int
 
+	// displayed prefixes for sliders
+	Prefix() [3]string
+
+	// which slider is focused
+	CurrentValueIndex() int
+	ScrollValueIndex(n int)
+
+	// values for focused slider
+	Values() [3]int
+	ScrollCurrentValue(n int)
+	WithValue(valueIndex int, value int) input
+
+	ToRgb() rgb
+}
+
+// manages state of input and output
+type color struct {
 	outputMode outputMode
 
 	inputMode inputMode
-	rgb       rgb
-	hsl       hsl
+	inputs    []input
 }
 
-func colorFromInput(s string) (c color) {
+// construct default color state
+func newColor() color {
+	c := color{
+		outputMode: hexOutputMode,
+
+		inputMode: rgbInputMode,
+		inputs:    []input{&rgb{values: [3]int{20, 80, 80}}, &hsl{values: [3]int{200, 50, 50}}},
+	}
+	return c
+}
+
+// parse any color format and set inputs accordingly
+func (self *color) parseInput(s string) {
 	s = strings.ToLower(s)
-	s = strings.ReplaceAll(s, ",", " ")
 	s = strings.TrimSpace(s)
 
 	switch {
 	case strings.HasPrefix(s, "rgb("):
-		c.inputMode = rgbInputMode
 		rgb, err := rgbFromString(s)
 		if err != nil {
 			log.Println(err)
 		}
-		c.rgb = rgb
+		self.inputMode = rgbInputMode
+		self.inputs[rgbInputMode] = &rgb
 	case strings.HasPrefix(s, "hsl("):
-		c.inputMode = hslInputMode
 		hsl, err := hslFromString(s)
 		if err != nil {
 			log.Println(err)
 		}
-		c.hsl = hsl
-
+		self.inputMode = hslInputMode
+		self.inputs[hslInputMode] = &hsl
 	default:
-		c.inputMode = rgbInputMode
 		rgb, err := rgbFromHexString(s)
 		if err != nil {
 			log.Println(err)
 		}
-		c.rgb = rgb
+		self.inputMode = rgbInputMode
+		self.inputs[rgbInputMode] = &rgb
 	}
-
-	return
 }
 
-func (self *color) currentAsRgb() (rgb rgb) {
-	switch self.inputMode {
-	case rgbInputMode:
-		rgb = self.rgb
-	case hslInputMode:
-		rgb = hslToRgb(self.hsl)
-	default:
-		log.Panicf("unexpected inputMode %v", self.inputMode)
-	}
-	return
+func (self *color) CurrentInput() *input {
+	return &self.inputs[self.inputMode]
 }
 
-// Set current input mode and update its value.
+func (self *color) AsRgb() (rgb rgb) {
+	return (*self.CurrentInput()).ToRgb()
+}
+
 func (self *color) setInputMode(newInputMode inputMode) {
 	switch newInputMode {
 	case rgbInputMode:
-		self.rgb = self.currentAsRgb()
+		rgb := self.AsRgb()
+		self.inputs[rgbInputMode] = &rgb
 	case hslInputMode:
-		self.hsl = rgbToHsl(self.currentAsRgb())
+		hsl := rgbToHsl(self.AsRgb())
+		self.inputs[hslInputMode] = &hsl
 	default:
-		log.Panicf("unexpected inputMode %v", newInputMode)
+		log.Fatalf("unexpected inputMode %v", newInputMode)
 	}
 	self.inputMode = newInputMode
-	self.currentSlider = 0
 }
 
-func (self *color) cycleInputMode() {
+func (self *color) CycleInputModes() {
 	switch self.inputMode {
 	case rgbInputMode:
 		self.setInputMode(hslInputMode)
 	case hslInputMode:
 		self.setInputMode(rgbInputMode)
 	default:
-		log.Panicf("unexpected inputMode %v", self.inputMode)
+		log.Fatalf("unexpected inputMode %v", self.inputMode)
 	}
 }
 
-func (self *color) nextValue(n int) {
-	// scroll by percent?
-	// if !(perc >= -1 && perc <= 1) {
-	// 	log.Panicf("perc is not in range [-1,1]: %v", perc)
-	// }
-	switch self.inputMode {
-	case rgbInputMode:
-		// self.rgbSliders[self.currentSlider].slide(n)?
-		switch self.currentSlider {
-		case 0:
-			self.rgb.r = clamp(self.rgb.r+n, 0, 255)
-		case 1:
-			self.rgb.g = clamp(self.rgb.g+n, 0, 255)
-		case 2:
-			self.rgb.b = clamp(self.rgb.b+n, 0, 255)
-		default:
-			log.Panicf("unexpected currentSlider %v", self.currentSlider)
-		}
-	case hslInputMode:
-		switch self.currentSlider {
-		case 0:
-			self.hsl.h = clamp(self.hsl.h+n, 0, 360)
-		case 1:
-			self.hsl.s = clamp(self.hsl.s+n, 0, 100)
-		case 2:
-			self.hsl.l = clamp(self.hsl.l+n, 0, 100)
-		default:
-			log.Panicf("unexpected currentSlider %v", self.currentSlider)
-		}
-	default:
-		log.Panicf("unexpected mode %v", self.inputMode)
-	}
+func (self *color) ScrollCurrentValue(n int) {
+	(*self.CurrentInput()).ScrollCurrentValue(n)
 }
 
-func (self *color) nextSlider(n int) {
-	self.currentSlider = clamp(self.currentSlider+n, 0, 2)
+func (self *color) ScrollValues(n int) {
+	(*self.CurrentInput()).ScrollValueIndex(n)
 }
 
-func (self *color) cycleOutputMode() {
+func (self *color) CycleOutputModes() {
 	switch self.outputMode {
 	case hexOutputMode:
 		self.outputMode = rgbOutputMode
@@ -161,20 +150,15 @@ func (self *color) cycleOutputMode() {
 	}
 }
 
-func (self *color) output() string {
-	rgb := self.currentAsRgb()
+func (self *color) Output() string {
+	rgb := (*self.CurrentInput()).ToRgb()
 	switch self.outputMode {
 	case hexOutputMode:
-		return rgbToHex(rgb)
+		return rgbToHexString(rgb)
 	case rgbOutputMode:
 		return rgbToString(rgb)
 	case hslOutputMode:
-		hsl := self.hsl
-		if self.inputMode != hslInputMode {
-			// in this case color.hsl is not set
-			hsl = rgbToHsl(rgb)
-		}
-		return hslToString(hsl)
+		return hslToString(rgbToHsl(rgb))
 	default:
 		log.Panicf("unexpected outputMode %v", self.outputMode)
 	}

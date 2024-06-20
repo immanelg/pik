@@ -8,41 +8,84 @@ import (
 )
 
 type hsl struct {
-	h int // 0..360
-	s int // 0..100
-	l int // 0.100
+	currentIndex int
+	values       [3]int
 }
 
-type hsla struct {
-	hsl
-	a int // 0..100
+func newHsl(h int, s int, l int) hsl {
+	return hsl{values: [3]int{h, s, l}}
 }
+
+func (self *hsl) CurrentValueIndex() int {
+	return self.currentIndex
+}
+
+func (self *hsl) ScrollCurrentValue(n int) {
+	i := self.currentIndex
+	self.values[i] = clamp(self.values[i]+n, self.Min()[i], self.Max()[i])
+}
+
+func (self *hsl) ScrollValueIndex(n int) {
+	self.currentIndex = clamp(self.currentIndex+n, 0, 2)
+}
+
+func (self *hsl) WithValue(valueIdx int, value int) input {
+	hsl := hsl{values: self.values}
+	hsl.values[valueIdx] = value
+	return input(&hsl)
+}
+
+func (self *hsl) Values() [3]int {
+	return self.values
+}
+
+func (self *hsl) Max() [3]int {
+	return [3]int{360, 100, 100}
+}
+
+func (self *hsl) Min() [3]int {
+	return [3]int{0, 0, 0}
+}
+
+func (self *hsl) Prefix() [3]string {
+	return [3]string{"H", "S", "L"}
+}
+
+func (self *hsl) ToRgb() rgb {
+	return hslToRgb(*self)
+}
+
+var _ input = &hsl{}
 
 func hslToString(hsl hsl) string {
-	return fmt.Sprintf("hsl(%d %d%% %d%%)", hsl.h, hsl.s, hsl.l)
+	h, s, l := hsl.Triple()
+	return fmt.Sprintf("hsl(%d %d%% %d%%)", h, s, l)
 }
 
 func hslFromString(s string) (hsl hsl, err error) {
 	s = strings.TrimPrefix(s, "hsl(")
+	s = strings.ReplaceAll(s, ",", " ")
 	s = strings.TrimSuffix(s, ")")
 	values := strings.Fields(s)
 	if len(values) != 3 {
 		return hsl, errors.New("hsl should have 3 arguments")
 	}
-	hsl.h, err = strconv.Atoi(strings.TrimSuffix(values[0], "deg"))
-	hsl.s, err = strconv.Atoi(strings.TrimSuffix(values[1], "%"))
-	hsl.l, err = strconv.Atoi(strings.TrimSuffix(values[2], "%"))
+	hsl.values[0], err = strconv.Atoi(strings.TrimSuffix(values[0], "deg"))
+	hsl.values[1], err = strconv.Atoi(strings.TrimSuffix(values[1], "%"))
+	hsl.values[2], err = strconv.Atoi(strings.TrimSuffix(values[2], "%"))
 	return
 }
 
-func (self hsl) triple() (int, int, int) {
-	return self.h, self.s, self.l
+func (self hsl) Triple() (int, int, int) {
+	v := self.values
+	return v[0], v[1], v[2]
 }
 
 func hslToRgb(hsl hsl) rgb {
-	h := float64(hsl.h) / 360.0
-	s := float64(hsl.s) / 100.0
-	l := float64(hsl.l) / 100.0
+	v := hsl.Values()
+	h := float64(v[0]) / 360.0
+	s := float64(v[1]) / 100.0
+	l := float64(v[2]) / 100.0
 
 	var r, g, b float64
 
@@ -64,13 +107,14 @@ func hslToRgb(hsl hsl) rgb {
 		b = hueToRgb(p, q, h-1.0/3.0)
 	}
 
-	return rgb{int(r * 255), int(g * 255), int(b * 255)}
+	return rgb{values: [3]int{int(r * 255), int(g * 255), int(b * 255)}}
 }
 
 func rgbToHsl(rgb rgb) hsl {
-	r := float64(rgb.r) / 255
-	g := float64(rgb.g) / 255
-	b := float64(rgb.b) / 255
+	v := rgb.Values()
+	r := float64(v[0]) / 255
+	g := float64(v[1]) / 255
+	b := float64(v[2]) / 255
 
 	maxVal := max(max(r, g), b)
 	minVal := min(min(r, g), b)
@@ -106,7 +150,7 @@ func rgbToHsl(rgb rgb) hsl {
 		h *= 60
 	}
 
-	return hsl{int(h), int(s * 100), int(l * 100)}
+	return newHsl(int(h), int(s*100), int(l*100))
 }
 
 func hueToRgb(p, q, t float64) float64 {

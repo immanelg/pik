@@ -24,42 +24,42 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 			self.screen.Sync()
 
 		case ev.Rune() == 'h':
-			self.color.nextValue(-1)
+			self.color.ScrollCurrentValue(-1)
 		case ev.Rune() == 'l':
-			self.color.nextValue(+1)
+			self.color.ScrollCurrentValue(+1)
 		case ev.Rune() == 'b':
-			self.color.nextValue(-8)
+			self.color.ScrollCurrentValue(-8)
 		case ev.Rune() == 'w':
-			self.color.nextValue(+8)
+			self.color.ScrollCurrentValue(+8)
 		case ev.Rune() == '[':
-			self.color.nextValue(-32)
+			self.color.ScrollCurrentValue(-32)
 		case ev.Rune() == ']':
-			self.color.nextValue(+32)
+			self.color.ScrollCurrentValue(+32)
 
 		case ev.Rune() == 'j':
-			self.color.nextSlider(+1)
+			self.color.ScrollValues(+1)
 		case ev.Rune() == 'k':
-			self.color.nextSlider(-1)
+			self.color.ScrollValues(-1)
 
 		case ev.Rune() == 'i':
-			self.color.cycleInputMode()
+			self.color.CycleInputModes()
 
 		case ev.Rune() == 'o':
-			self.color.cycleOutputMode()
+			self.color.CycleOutputModes()
 
 		case ev.Rune() == 'y':
-    		c := self.color.output()
-    		go func() {
-    			if err := clipboard.Set(c); err != nil {
-        			log.Printf("error writing clipboard: %v", err) 
-    			}
-    		}()
+			c := self.color.Output()
+			go func() {
+				if err := clipboard.Set(c); err != nil {
+					log.Printf("error writing clipboard: %v", err)
+				}
+			}()
 
 		case ev.Rune() == 'p':
 			if c, err := clipboard.Get(); err != nil {
-    			log.Printf("error reading clipboard: %v", err) 
+				log.Printf("error reading clipboard: %v", err)
 			} else {
-				self.color = colorFromInput(c)
+				self.color.parseInput(c)
 			}
 		}
 
@@ -71,5 +71,3 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 	}
 	return
 }
-
-

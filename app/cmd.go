@@ -31,9 +31,9 @@ func Run() {
 			inputColor = input
 		}
 	}
-	color := color{}
+	color := newColor()
 	if inputColor != "" {
-		color = colorFromInput(inputColor)
+		color.parseInput(inputColor)
 	}
 
 	if logfile != "" {
@@ -56,6 +56,6 @@ func Run() {
 	app.loop()
 
 	if app.printOnExit {
-		fmt.Println(app.color.output())
+		fmt.Println(app.color.Output())
 	}
 }

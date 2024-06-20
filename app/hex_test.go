@@ -9,12 +9,12 @@ func TestHexToRgb(t *testing.T) {
 		input  string
 		expect rgb
 	}{
-		{"#00CED1", rgb{0, 206, 209}},
-		{"#348217", rgb{52, 130, 23}},
+		{"#00CED1", newRgb(0, 206, 209)},
+		{"#348217", newRgb(52, 130, 23)},
 	}
 
 	for _, tc := range testCases {
-		result, err := hexToRgb(tc.input)
+		result, err := rgbFromHexString(tc.input)
 		if result != tc.expect {
 			t.Errorf("input %v, expect: %v, got: %v", tc.input, tc.expect, result)
 		}
@@ -30,12 +30,12 @@ func TestRgbToHex(t *testing.T) {
 		input  rgb
 		expect string
 	}{
-		{rgb{0, 206, 209}, "#00CED1"},
-		{rgb{52, 130, 23}, "#348217"},
+		{newRgb(0, 206, 209), "#00CED1"},
+		{newRgb(52, 130, 23), "#348217"},
 	}
 
 	for _, tc := range testCases {
-		result := rgbToHex(tc.input)
+		result := rgbToHexString(tc.input)
 		if result != tc.expect {
 			t.Errorf("input %v, expect: %v, got: %v", tc.input, tc.expect, result)
 		}

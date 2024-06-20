@@ -10,7 +10,7 @@ func TestRgbToHsl(t *testing.T) {
 		expect hsl
 	}{
 		// {rgb{255, 213, 0}, hsl{50, 100, 50}}, // fails due to floating point arithmetic
-		{rgb{255, 0, 0}, hsl{0, 100, 50}},
+		{newRgb(255, 0, 0), newHsl(0, 100, 50)},
 	}
 
 	for _, tc := range testCases {
@@ -27,7 +27,7 @@ func TestHslToRgb(t *testing.T) {
 		expect rgb
 	}{
 		// {hsl{50, 100, 50}, rgb{255, 213, 0}}, // fails due to floating point arithmetic
-		{hsl{0, 100, 50}, rgb{255, 0, 0}},
+		{newHsl(0, 100, 50), newRgb(255, 0, 0)},
 	}
 
 	for _, tc := range testCases {
@@ -36,4 +36,8 @@ func TestHslToRgb(t *testing.T) {
 			t.Errorf("input %v, expect: %v, got: %v", tc.input, tc.expect, result)
 		}
 	}
+}
+
+func TestHslFromString(t *testing.T) {
+	t.Fatal("TODO")
 }
