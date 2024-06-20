@@ -14,9 +14,9 @@ type app struct {
 	printOnExit  bool
 }
 
-func newApp(initialColor rgb) app {
+func newApp(color color) app {
 	return app{
-		color: color{inputMode: rgbInputMode, rgb: initialColor},
+		color: color,
 	}
 }
 

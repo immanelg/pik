@@ -10,8 +10,9 @@ go install github.com/immanelg/pik
 ```
 
 # Usage
+
 ## Flags
-- `-hex string`: initial color
+- `-init string`: initial color (`#123456`, `rgb(...)`, `hsl(...)`)
 - `-logfile /dev/null`: log debug messages to file
 
 ## Keybindings

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"io"
@@ -9,18 +10,23 @@ import (
 )
 
 func Run() {
-	var initialColor string
+	var inputColor string
 	var logfile string
-	flag.StringVar(&initialColor, "hex", "", "initial color to edit (hex)")
+	flag.StringVar(&inputColor, "init", "", "initial color to edit")
 	flag.StringVar(&logfile, "logfile", "", "file for debug logging")
 	flag.Parse()
 
-	var initialRgb rgb = initRgb
-	if initialColor != "" {
-		var err error
-		initialRgb, err = hexToRgb(initialColor)
-		if err != nil {
-			log.Fatalf("cannot parse HEX color: %s\n", err)
+	if inputColor == "" {
+		fi, _ := os.Stdin.Stat()
+
+		if (fi.Mode() & os.ModeCharDevice) == 0 {
+			// piped into us
+			r := bufio.NewReader(os.Stdin)
+			input, err := r.ReadString('\n')
+			if err != nil {
+				log.Printf("error while reading stdin: %v", err)
+			}
+			inputColor = input
 		}
 	}
 
@@ -37,7 +43,8 @@ func Run() {
 		log.SetOutput(io.Discard)
 	}
 
-	app := newApp(initialRgb)
+	color := colorFromInput(inputColor)
+	app := newApp(color)
 	app.loop()
 
 	if app.printOnExit {

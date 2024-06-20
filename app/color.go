@@ -2,6 +2,7 @@ package app
 
 import (
 	"log"
+	"strings"
 )
 
 // NOTE: hsl<->rgb<->whatever is not a bijection.
@@ -37,6 +38,39 @@ type color struct {
 	inputMode inputMode
 	rgb       rgb
 	hsl       hsl
+}
+
+func colorFromInput(s string) (c color) {
+	s = strings.ToLower(s)
+	s = strings.ReplaceAll(s, ",", " ")
+	s = strings.TrimSpace(s)
+
+	switch {
+	case strings.HasPrefix(s, "rgb("):
+		c.inputMode = rgbInputMode
+		rgb, err := rgbFromString(s)
+		if err != nil {
+			log.Println(err)
+		}
+		c.rgb = rgb
+	case strings.HasPrefix(s, "hsl("):
+		c.inputMode = hslInputMode
+		hsl, err := hslFromString(s)
+		if err != nil {
+			log.Println(err)
+		}
+		c.hsl = hsl
+
+	default:
+		c.inputMode = rgbInputMode
+		rgb, err := rgbFromHexString(s)
+		if err != nil {
+			log.Println(err)
+		}
+		c.rgb = rgb
+	}
+
+	return
 }
 
 func (self *color) currentAsRgb() (rgb rgb) {
@@ -133,14 +167,14 @@ func (self *color) output() string {
 	case hexOutputMode:
 		return rgbToHex(rgb)
 	case rgbOutputMode:
-		return rgbCssString(rgb)
+		return rgbToString(rgb)
 	case hslOutputMode:
 		hsl := self.hsl
 		if self.inputMode != hslInputMode {
 			// in this case color.hsl is not set
 			hsl = rgbToHsl(rgb)
 		}
-		return hslCssString(hsl)
+		return hslToString(hsl)
 	default:
 		log.Panicf("unexpected outputMode %v", self.outputMode)
 	}

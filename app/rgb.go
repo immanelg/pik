@@ -1,6 +1,11 @@
 package app
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 type rgb struct {
 	r int // 0..255
@@ -13,12 +18,37 @@ type rgba struct {
 	a int // 0..100
 }
 
-var whiteRgb = rgb{255, 255, 255}
-var blackRgb = rgb{0, 0, 0}
-var initRgb = rgb{216, 146, 215}
-
-func rgbCssString(rgb rgb) string {
+func rgbToString(rgb rgb) string {
 	return fmt.Sprintf("rgb(%d %d %d)", rgb.r, rgb.g, rgb.b)
+}
+
+func rgbFromString(s string) (rgb rgb, err error) {
+	s = strings.TrimPrefix(s, "rgb(")
+	s = strings.TrimSuffix(s, ")")
+	values := strings.Fields(s)
+	if len(values) != 3 {
+		return rgb, errors.New("rgb should have 3 arguments")
+	}
+	rgb.r, err = strconv.Atoi(values[0])
+	rgb.g, err = strconv.Atoi(values[1])
+	rgb.b, err = strconv.Atoi(values[2])
+	return
+}
+
+func rgbToHexString(rgb rgb) string {
+	return fmt.Sprintf("rgb(%d %d %d)", rgb.r, rgb.g, rgb.b)
+
+}
+
+func rgbFromHexString(s string) (rgb rgb, err error) {
+	s = strings.TrimPrefix(s, "#")
+
+	number, err := strconv.ParseUint(s, 16, 32)
+
+	rgb.r = int(number >> 16 & 0xFF)
+	rgb.g = int(number >> 8 & 0xFF)
+	rgb.b = int(number & 0xFF)
+	return
 }
 
 func (self rgb) inverted() rgb {

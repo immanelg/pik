@@ -1,9 +1,10 @@
-- [ ] Parse any input format instead of just `-hex`
-- [ ] Read from stdin
+- [x] Parse any input format instead of just `-hex`
+- [x] Read from stdin
 
 - [ ] Paste color from clipboard
 - [ ] Copy color to clipboard
 - [ ] Save colors
+- [ ] Input color at runtime
 
 - [ ] Configurable slider length
 - [ ] Configurable keybindings

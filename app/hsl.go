@@ -1,6 +1,11 @@
 package app
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 type hsl struct {
 	h int // 0..360
@@ -13,8 +18,21 @@ type hsla struct {
 	a int // 0..100
 }
 
-func hslCssString(hsl hsl) string {
+func hslToString(hsl hsl) string {
 	return fmt.Sprintf("hsl(%d %d%% %d%%)", hsl.h, hsl.s, hsl.l)
+}
+
+func hslFromString(s string) (hsl hsl, err error) {
+	s = strings.TrimPrefix(s, "hsl(")
+	s = strings.TrimSuffix(s, ")")
+	values := strings.Fields(s)
+	if len(values) != 3 {
+		return hsl, errors.New("hsl should have 3 arguments")
+	}
+	hsl.h, err = strconv.Atoi(strings.TrimSuffix(values[0], "deg"))
+	hsl.s, err = strconv.Atoi(strings.TrimSuffix(values[1], "%"))
+	hsl.l, err = strconv.Atoi(strings.TrimSuffix(values[2], "%"))
+	return
 }
 
 func (self hsl) triple() (int, int, int) {
