@@ -16,11 +16,11 @@ func Run() {
 	flag.StringVar(&logfile, "logfile", "", "file for debug logging")
 	flag.Parse()
 
+	// if not given -init, get input from stdin
 	if inputColor == "" {
 		fi, _ := os.Stdin.Stat()
 
 		if (fi.Mode() & os.ModeCharDevice) == 0 {
-			// piped into us
 			r := bufio.NewReader(os.Stdin)
 			input, err := r.ReadString('\n')
 			if err != nil {
@@ -28,6 +28,10 @@ func Run() {
 			}
 			inputColor = input
 		}
+	}
+	color := color{}
+	if inputColor != "" {
+		color = colorFromInput(inputColor)
 	}
 
 	if logfile != "" {
@@ -43,8 +47,8 @@ func Run() {
 		log.SetOutput(io.Discard)
 	}
 
-	color := colorFromInput(inputColor)
 	app := newApp(color)
+
 	app.loop()
 
 	if app.printOnExit {
