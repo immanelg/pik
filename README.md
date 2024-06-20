@@ -21,6 +21,8 @@ go install github.com/immanelg/pik
 - `j`, `k`: change focused slider
 - `i`: cycle input mode (RGB, HSL)
 - `o`: cycle output mode (RGB, HEX, HSL)
+- `y`: copy to clipboard
+- `p`: paste from clipboard
 - `enter`: quit and print current color
 - `q`: quit
 - `<c-l>`: redraw

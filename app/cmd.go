@@ -7,6 +7,8 @@ import (
 	"io"
 	"log"
 	"os"
+
+	"github.com/immanelg/pik/clipboard"
 )
 
 func Run() {
@@ -46,6 +48,8 @@ func Run() {
 	} else {
 		log.SetOutput(io.Discard)
 	}
+
+	clipboard.Guess()
 
 	app := newApp(color)
 

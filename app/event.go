@@ -1,7 +1,10 @@
 package app
 
 import (
+	"log"
+
 	"github.com/gdamore/tcell/v2"
+	"github.com/immanelg/pik/clipboard"
 )
 
 func (self *app) handleEvent(ev tcell.Event) (quit bool) {
@@ -16,6 +19,9 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 		case ev.Key() == tcell.KeyEnter:
 			self.printOnExit = true
 			quit = true
+
+		case ev.Key() == tcell.KeyCtrlL:
+			self.screen.Sync()
 
 		case ev.Rune() == 'h':
 			self.color.nextValue(-1)
@@ -37,12 +43,24 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 
 		case ev.Rune() == 'i':
 			self.color.cycleInputMode()
+
 		case ev.Rune() == 'o':
 			self.color.cycleOutputMode()
 
-		case ev.Key() == tcell.KeyCtrlL:
-			self.screen.Sync()
+		case ev.Rune() == 'y':
+    		c := self.color.output()
+    		go func() {
+    			if err := clipboard.Set(c); err != nil {
+        			log.Printf("error writing clipboard: %v", err) 
+    			}
+    		}()
 
+		case ev.Rune() == 'p':
+			if c, err := clipboard.Get(); err != nil {
+    			log.Printf("error reading clipboard: %v", err) 
+			} else {
+				self.color = colorFromInput(c)
+			}
 		}
 
 	case *tcell.EventMouse:
@@ -53,3 +71,5 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 	}
 	return
 }
+
+
