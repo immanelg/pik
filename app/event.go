@@ -58,7 +58,7 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 		case ev.Rune() == 'p':
 			if c, err := clipboard.Get(); err != nil {
 				log.Printf("error reading clipboard: %v", err)
-			} else {
+			} else if c != "" {
 				self.color.parseInput(c)
 			}
 		}

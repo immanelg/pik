@@ -49,7 +49,7 @@ func Run() {
 		log.SetOutput(io.Discard)
 	}
 
-	clipboard.Guess()
+	clipboard.Init()
 
 	app := newApp(color)
 

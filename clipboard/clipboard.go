@@ -13,9 +13,9 @@ var CopySupported = false
 var copyCmd []string
 var pasteCmd []string
 
-var errUnsupported = errors.New("unsupported clipboard")
+var errUnsupported = errors.New("not supported")
 
-func Guess() {
+func Init() {
 	switch {
 	case os.Getenv("WAYLAND_DISPLAY") != "":
 		if path, err := exec.LookPath("wl-copy"); err == nil {
@@ -48,14 +48,17 @@ func Set(data string) error {
 	if err != nil {
 		return err
 	}
-	defer stdin.Close()
 
-	_, err = io.WriteString(stdin, data)
-	if err != nil {
-	    return err
-	} 
+	go func() {
+		_, _ = io.WriteString(stdin, data)
+		stdin.Close()
+	}()
+
 	_, err = cmd.CombinedOutput()
-	return err
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func Get() (string, error) {
