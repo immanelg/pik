@@ -33,7 +33,7 @@ func Run() {
 	}
 	color := newColor()
 	if inputColor != "" {
-		color.parseInput(inputColor)
+		color.ParseInput(inputColor)
 	}
 
 	if logfile != "" {

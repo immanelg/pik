@@ -59,7 +59,7 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 			if c, err := clipboard.Get(); err != nil {
 				log.Printf("error reading clipboard: %v", err)
 			} else if c != "" {
-				self.color.parseInput(c)
+				self.color.ParseInput(c)
 			}
 		}
 

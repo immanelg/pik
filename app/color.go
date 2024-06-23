@@ -67,7 +67,7 @@ func newColor() color {
 }
 
 // parse any color format and set inputs accordingly
-func (self *color) parseInput(s string) {
+func (self *color) ParseInput(s string) {
 	s = strings.ToLower(s)
 	s = strings.TrimSpace(s)
 
