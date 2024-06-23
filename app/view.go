@@ -61,8 +61,14 @@ func (self *app) drawSliders(x, y int) {
 	}
 }
 
+func (self *app) drawHelp(x, y int) {
+    txt := "keys: h j k l w b [ ] i o y p q <ret>"
+	self.drawText(x, y, txt, tcell.StyleDefault)
+}
+
 func (self *app) draw() {
 	x, y := 0, 0
 	self.drawOutput(x, y)
 	self.drawSliders(x, y+1)
+	self.drawHelp(x, y+4) 
 }
