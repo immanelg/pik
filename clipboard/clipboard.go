@@ -16,8 +16,7 @@ var pasteCmd []string
 var errUnsupported = errors.New("not supported")
 
 func Init() {
-	switch {
-	case os.Getenv("WAYLAND_DISPLAY") != "":
+	if os.Getenv("WAYLAND_DISPLAY") != "" {
 		if path, err := exec.LookPath("wl-copy"); err == nil {
 			CopySupported = true
 			copyCmd = []string{path}
@@ -27,14 +26,22 @@ func Init() {
 			pasteCmd = []string{path, "-n"}
 		}
 
-	case os.Getenv("DISPLAY") != "":
+	} else if os.Getenv("DISPLAY") != "" {
 		if path, err := exec.LookPath("xclip"); err == nil {
 			PasteSupported = true
 			CopySupported = true
 			copyCmd = []string{path, "-selection", "clipboard"}
 			pasteCmd = []string{path, "-selection", "clipboard", "-o"}
 		}
-	default:
+	} else {
+		if path, err := exec.LookPath("termux-clipboard-set"); err == nil {
+			CopySupported = true
+			copyCmd = []string{path}
+		}
+		if path, err := exec.LookPath("termux-clipboard-get"); err == nil {
+			PasteSupported = true
+			pasteCmd = []string{path}
+		}
 	}
 }
 
