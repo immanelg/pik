@@ -133,7 +133,7 @@ func (self *color) ScrollCurrentValue(n int) {
 	(*self.CurrentInput()).ScrollCurrentValue(n)
 }
 
-func (self *color) ScrollValues(n int) {
+func (self *color) ScrollValueIndex(n int) {
 	(*self.CurrentInput()).ScrollValueIndex(n)
 }
 

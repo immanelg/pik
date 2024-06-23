@@ -37,9 +37,9 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 			self.color.ScrollCurrentValue(+32)
 
 		case ev.Rune() == 'j':
-			self.color.ScrollValues(+1)
+			self.color.ScrollValueIndex(+1)
 		case ev.Rune() == 'k':
-			self.color.ScrollValues(-1)
+			self.color.ScrollValueIndex(-1)
 
 		case ev.Rune() == 'i':
 			self.color.CycleInputModes()
