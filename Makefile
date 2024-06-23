@@ -1,3 +1,5 @@
+.PHONY: default build run fmt test clean
+
 default: build
 
 build:
