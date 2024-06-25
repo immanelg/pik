@@ -1,4 +1,5 @@
 # pik
+![image](https://github.com/immanelg/pik/assets/119798691/a7156404-c752-4899-b837-217dc1acc471)
 
 Color picker for terminal
 
