@@ -7,7 +7,7 @@ Color picker for terminal
 
 ## From source
 ```
-go install github.com/immanelg/pik
+go install github.com/immanelg/pik@latest
 ```
 
 # Usage
