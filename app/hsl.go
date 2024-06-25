@@ -62,7 +62,10 @@ func hslToString(hsl hsl) string {
 	return fmt.Sprintf("hsl(%d %d%% %d%%)", h, s, l)
 }
 
-func hslFromString(s string) (hsl hsl, err error) {
+func hslFromString(s string) (hsl, error) {
+	var hsl hsl
+	var err error
+
 	s = strings.TrimPrefix(s, "hsl(")
 	s = strings.ReplaceAll(s, ",", " ")
 	s = strings.TrimSuffix(s, ")")
@@ -71,9 +74,26 @@ func hslFromString(s string) (hsl hsl, err error) {
 		return hsl, errors.New("hsl should have 3 arguments")
 	}
 	hsl.values[0], err = strconv.Atoi(strings.TrimSuffix(values[0], "deg"))
+	if err != nil {
+		return hsl, err
+	}
 	hsl.values[1], err = strconv.Atoi(strings.TrimSuffix(values[1], "%"))
+	if err != nil {
+		return hsl, err
+	}
 	hsl.values[2], err = strconv.Atoi(strings.TrimSuffix(values[2], "%"))
-	return
+	if err != nil {
+		return hsl, err
+	}
+
+	min, max := hsl.Min(), hsl.Max()
+	for i, v := range hsl.values {
+		if v > max[i] || v < min[i] {
+			return hsl, fmt.Errorf("value out of range %v", v)
+		}
+	}
+
+	return hsl, err
 }
 
 func (self hsl) Triple() (int, int, int) {

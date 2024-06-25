@@ -60,7 +60,10 @@ func rgbToString(rgb rgb) string {
 	return fmt.Sprintf("rgb(%d %d %d)", r, g, b)
 }
 
-func rgbFromString(s string) (rgb rgb, err error) {
+func rgbFromString(s string) (rgb, error) {
+	var rgb rgb
+	var err error
+
 	s = strings.TrimPrefix(s, "rgb(")
 	s = strings.ReplaceAll(s, ",", " ")
 	s = strings.TrimSuffix(s, ")")
@@ -69,9 +72,26 @@ func rgbFromString(s string) (rgb rgb, err error) {
 		return rgb, errors.New("rgb should have 3 arguments")
 	}
 	rgb.values[0], err = strconv.Atoi(values[0])
+	if err != nil {
+		return rgb, err
+	}
 	rgb.values[1], err = strconv.Atoi(values[1])
+	if err != nil {
+		return rgb, err
+	}
 	rgb.values[2], err = strconv.Atoi(values[2])
-	return
+	if err != nil {
+		return rgb, err
+	}
+
+	min, max := rgb.Min(), rgb.Max()
+	for i, v := range rgb.values {
+		if v > max[i] || v < min[i] {
+			return rgb, fmt.Errorf("value out of range %v", v)
+		}
+	}
+
+	return rgb, err
 }
 
 func (self rgb) inverted() rgb {

@@ -2,128 +2,84 @@ package app
 
 import (
 	"log"
-	"strings"
 )
-
-// NOTE: hsl<->rgb<->whatever is not a bijection.
-// We can't have only one piece of state for color and then have different "views" to them (rgb/hsl/hsv/whatever).
-// When changing a hsl slider value in this model, we have to convert rgb->hsl on the fly, change hsl, and then
-// convert it back; it will lose information.
-
-// Displayed color mode
-type inputMode uint8
-
-const (
-	rgbInputMode inputMode = 0
-	hslInputMode           = 1
-)
-
-// What will be printed after exiting
-type outputMode uint8
-
-const (
-	hexOutputMode = outputMode(iota)
-	rgbOutputMode
-	hslOutputMode
-)
-
-type input interface {
-	// constraints for values
-	Max() [3]int
-	Min() [3]int
-
-	// displayed prefixes for sliders
-	Prefix() [3]string
-
-	// which slider is focused
-	CurrentValueIndex() int
-	ScrollValueIndex(n int)
-
-	// values for focused slider
-	Values() [3]int
-	ScrollCurrentValue(n int)
-	WithValue(valueIndex int, value int) input
-
-	ToRgb() rgb
-}
 
 // manages state of input and output
 type color struct {
 	outputMode outputMode
 
+	// current index for inputs
 	inputMode inputMode
-	inputs    []input
+	// color inputs, should have length of set of inputMode enum values
+	inputs [inputModeCount]input
 }
 
-// construct default color state
+// construct default color state.  you need to call ParseInput or Set<...> to change defaults
 func newColor() color {
-	c := color{
-		outputMode: hexOutputMode,
+	defaulthsl := newHsl(100, 50, 50)
 
-		inputMode: rgbInputMode,
-		inputs:    []input{&rgb{values: [3]int{20, 80, 80}}, &hsl{values: [3]int{200, 50, 50}}},
-	}
+	c := color{}
+	c.inputMode = hslInputMode
+	c.inputs[rgbInputMode] = &rgb{}
+	c.inputs[hslInputMode] = &defaulthsl
+
+	c.outputMode = hexOutputMode
 	return c
 }
 
-// parse any color format and set inputs accordingly
 func (self *color) ParseInput(s string) {
-	s = strings.ToLower(s)
-	s = strings.TrimSpace(s)
-
-	switch {
-	case strings.HasPrefix(s, "rgb("):
-		rgb, err := rgbFromString(s)
-		if err != nil {
-			log.Println(err)
-		}
-		self.inputMode = rgbInputMode
-		self.inputs[rgbInputMode] = &rgb
-	case strings.HasPrefix(s, "hsl("):
-		hsl, err := hslFromString(s)
-		if err != nil {
-			log.Println(err)
-		}
-		self.inputMode = hslInputMode
-		self.inputs[hslInputMode] = &hsl
-	default:
-		rgb, err := rgbFromHexString(s)
-		if err != nil {
-			log.Println(err)
-		}
-		self.inputMode = rgbInputMode
-		self.inputs[rgbInputMode] = &rgb
+	inputMode, input, err := parseInput(s)
+	if err != nil {
+		log.Println(err)
 	}
+	self.SetInput(inputMode, input)
 }
 
+func (self *color) SetInput(inputMode inputMode, input input) {
+	self.inputMode = inputMode
+	self.inputs[inputMode] = input
+}
+
+func (self *color) SetRgb(rgb rgb) {
+	self.inputMode = rgbInputMode
+	self.inputs[rgbInputMode] = &rgb
+}
+
+func (self *color) SetHsl(hsl hsl) {
+	self.inputMode = hslInputMode
+	self.inputs[rgbInputMode] = &hsl
+}
+
+// get current input
 func (self *color) CurrentInput() *input {
 	return &self.inputs[self.inputMode]
 }
 
+// convert current color to rgb
 func (self *color) AsRgb() (rgb rgb) {
 	return (*self.CurrentInput()).ToRgb()
 }
 
-func (self *color) setInputMode(newInputMode inputMode) {
+// change the color mode, converting from current mode
+func (self *color) SwitchInputMode(newInputMode inputMode) {
 	switch newInputMode {
 	case rgbInputMode:
 		rgb := self.AsRgb()
-		self.inputs[rgbInputMode] = &rgb
+		self.SetRgb(rgb)
 	case hslInputMode:
 		hsl := rgbToHsl(self.AsRgb())
-		self.inputs[hslInputMode] = &hsl
+		self.SetHsl(hsl)
 	default:
 		log.Fatalf("unexpected inputMode %v", newInputMode)
 	}
-	self.inputMode = newInputMode
 }
 
 func (self *color) CycleInputModes() {
 	switch self.inputMode {
 	case rgbInputMode:
-		self.setInputMode(hslInputMode)
+		self.SwitchInputMode(hslInputMode)
 	case hslInputMode:
-		self.setInputMode(rgbInputMode)
+		self.SwitchInputMode(rgbInputMode)
 	default:
 		log.Fatalf("unexpected inputMode %v", self.inputMode)
 	}
@@ -150,6 +106,7 @@ func (self *color) CycleOutputModes() {
 	}
 }
 
+// serialize color to pretty string
 func (self *color) Output() string {
 	rgb := (*self.CurrentInput()).ToRgb()
 	switch self.outputMode {

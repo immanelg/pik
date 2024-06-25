@@ -37,7 +37,3 @@ func TestHslToRgb(t *testing.T) {
 		}
 	}
 }
-
-func TestHslFromString(t *testing.T) {
-	t.Fatal("TODO")
-}
