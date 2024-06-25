@@ -18,6 +18,19 @@ func Run() {
 	flag.StringVar(&logfile, "logfile", "", "file for debug logging")
 	flag.Parse()
 
+	if logfile != "" {
+		f, err := os.OpenFile(logfile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			log.Fatalf("error opening file: %v", err)
+		}
+		defer f.Close()
+
+		log.SetOutput(f)
+		log.Println("started")
+	} else {
+		log.SetOutput(io.Discard)
+	}
+
 	// if not given -init, get input from stdin
 	if inputColor == "" {
 		fi, _ := os.Stdin.Stat()
@@ -34,19 +47,6 @@ func Run() {
 	color := newColor()
 	if inputColor != "" {
 		color.ParseInput(inputColor)
-	}
-
-	if logfile != "" {
-		f, err := os.OpenFile(logfile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-		if err != nil {
-			log.Fatalf("error opening file: %v", err)
-		}
-		defer f.Close()
-
-		log.SetOutput(f)
-		log.Println("started")
-	} else {
-		log.SetOutput(io.Discard)
 	}
 
 	clipboard.Init()
