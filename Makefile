@@ -1,12 +1,15 @@
 .PHONY: default build run fmt test clean
 
-default: build
+BUILDFLAGS := -trimpath -ldflags="-s -w"
+NAME := "pik"
+
+all: build
 
 build:
-	go build -o pik
+	CGO_ENABLED=0 go build $(BUILDFLAGS) -o $(NAME)
 
 run: build
-	./pik
+	./$(NAME)
 
 install:
 	go install
@@ -18,5 +21,5 @@ test:
 	go test -v ./...
 
 clean:
-	rm -f ./pik
+	rm -f ./$(NAME)
 	go clean
