@@ -31,8 +31,9 @@ func (self *color) ParseInput(s string) {
 	inputMode, input, err := parseInput(s)
 	if err != nil {
 		log.Println(err)
+	} else {
+    	self.SetInput(inputMode, input)
 	}
-	self.SetInput(inputMode, input)
 }
 
 func (self *color) SetInput(inputMode inputMode, input input) {
