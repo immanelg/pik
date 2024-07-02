@@ -7,7 +7,7 @@ Color picker for terminal
 
 ## From source
 ```
-go install github.com/immanelg/pik@latest
+CGO_ENABLED=0 go install -trimpath -ldflags="-s -w" github.com/immanelg/pik@latest
 ```
 
 # Usage
