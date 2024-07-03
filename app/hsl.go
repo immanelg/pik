@@ -16,29 +16,6 @@ func newHsl(h int, s int, l int) hsl {
 	return hsl{values: [3]int{h, s, l}}
 }
 
-func (self *hsl) CurrentValueIndex() int {
-	return self.currentIndex
-}
-
-func (self *hsl) ScrollCurrentValue(n int) {
-	i := self.currentIndex
-	self.values[i] = clamp(self.values[i]+n, self.Min()[i], self.Max()[i])
-}
-
-func (self *hsl) ScrollValueIndex(n int) {
-	self.currentIndex = clamp(self.currentIndex+n, 0, 2)
-}
-
-func (self *hsl) WithValue(valueIdx int, value int) input {
-	hsl := hsl{values: self.values}
-	hsl.values[valueIdx] = value
-	return input(&hsl)
-}
-
-func (self *hsl) Values() [3]int {
-	return self.values
-}
-
 func (self *hsl) Max() [3]int {
 	return [3]int{360, 100, 100}
 }
@@ -49,6 +26,38 @@ func (self *hsl) Min() [3]int {
 
 func (self *hsl) Prefix() [3]string {
 	return [3]string{"H", "S", "L"}
+}
+
+func (self *hsl) CurrentValueIndex() int {
+	return self.currentIndex
+}
+
+func (self *hsl) ScrollValueIndex(n int) {
+	self.currentIndex = clamp(self.currentIndex+n, 0, 2)
+}
+
+func (self *hsl) Values() [3]int {
+	return self.values
+}
+
+func (self *hsl) ScrollCurrentValue(n int) {
+	i := self.currentIndex
+	self.values[i] = clamp(self.values[i]+n, self.Min()[i], self.Max()[i])
+}
+
+func (self *hsl) ScrollCurrentValueToBound(max bool) {
+	i := self.currentIndex
+	if max {
+		self.values[i] = self.Max()[i]
+	} else {
+		self.values[i] = self.Min()[i]
+	}
+}
+
+func (self *hsl) WithValue(valueIdx int, value int) input {
+	hsl := hsl{values: self.values}
+	hsl.values[valueIdx] = value
+	return input(&hsl)
 }
 
 func (self *hsl) ToRgb() rgb {

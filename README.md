@@ -18,7 +18,7 @@ CGO_ENABLED=0 go install -trimpath -ldflags="-s -w" github.com/immanelg/pik@late
 
 ## Keybindings
 
-- `h`, `l`, `b`, `w`, `[`, `]`: change current slider value
+- `h`, `l`, `b`, `w`, `[`, `]`, `H`, `L`: change current slider value
 - `j`, `k`: change focused slider
 - `i`: cycle input mode (RGB, HSL)
 - `o`: cycle output mode (RGB, HEX, HSL)

@@ -30,6 +30,8 @@ type input interface {
 	Values() [3]int
 	// change value of focused slider
 	ScrollCurrentValue(n int)
+	// change value of focused slider to min/max
+	ScrollCurrentValueToBound(max bool)
 	// construct copy with a slider having specific value
 	WithValue(valueIndex int, value int) input
 

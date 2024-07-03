@@ -32,7 +32,7 @@ func (self *color) ParseInput(s string) {
 	if err != nil {
 		log.Println(err)
 	} else {
-    	self.SetInput(inputMode, input)
+		self.SetInput(inputMode, input)
 	}
 }
 
@@ -92,6 +92,10 @@ func (self *color) ScrollCurrentValue(n int) {
 
 func (self *color) ScrollValueIndex(n int) {
 	(*self.CurrentInput()).ScrollValueIndex(n)
+}
+
+func (self *color) ScrollCurrentValueToBound(max bool) {
+	(*self.CurrentInput()).ScrollCurrentValueToBound(max)
 }
 
 func (self *color) CycleOutputModes() {

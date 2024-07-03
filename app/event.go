@@ -35,6 +35,10 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 			self.color.ScrollCurrentValue(-32)
 		case ev.Rune() == ']':
 			self.color.ScrollCurrentValue(+32)
+		case ev.Rune() == 'H':
+			self.color.ScrollCurrentValueToBound(false)
+		case ev.Rune() == 'L':
+			self.color.ScrollCurrentValueToBound(true)
 
 		case ev.Rune() == 'j':
 			self.color.ScrollValueIndex(+1)
