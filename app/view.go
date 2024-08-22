@@ -23,7 +23,12 @@ func (self *app) drawOutput(x int, y int) {
 	output := self.color.Output()
 
 	r, g, b := self.color.AsRgb().Triple()
-	style := tcell.StyleDefault.Background(tcell.NewRGBColor(int32(r), int32(g), int32(b))).Foreground(tcell.ColorBlack)
+	bg := tcell.NewRGBColor(int32(r), int32(g), int32(b))
+	fg := tcell.ColorBlack
+	if (float32(r)*0.299 + float32(g)*0.587 + float32(b)*0.114) < 186 {
+		fg = tcell.ColorWhite
+	}
+	style := tcell.StyleDefault.Background(bg).Foreground(fg)
 
 	self.drawText(x, y, output, style)
 }
