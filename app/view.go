@@ -28,7 +28,7 @@ func (self *app) drawOutput(x int, y int) {
 	if (float32(r)*0.299 + float32(g)*0.587 + float32(b)*0.114) < 186 {
 		fg = tcell.ColorWhite
 	}
-	style := tcell.StyleDefault.Background(bg).Foreground(fg)
+	style := tcell.StyleDefault.Background(bg).Foreground(fg).Bold(true)
 
 	self.drawText(x, y, output, style)
 }
