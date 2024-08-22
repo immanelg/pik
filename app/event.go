@@ -24,9 +24,9 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 		case key == tcell.KeyCtrlL:
 			self.screen.Sync()
 
-		case r == 'h':
+		case r == 'h' || key == tcell.KeyLeft:
 			self.color.ScrollCurrentValue(-1)
-		case r == 'l':
+		case r == 'l' || key == tcell.KeyRight:
 			self.color.ScrollCurrentValue(+1)
 		case r == 'b':
 			self.color.ScrollCurrentValue(-8)
@@ -36,14 +36,14 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 			self.color.ScrollCurrentValue(-32)
 		case r == ']':
 			self.color.ScrollCurrentValue(+32)
-		case r == 'H':
+		case r == 'H' || key == tcell.KeyPgUp:
 			self.color.ScrollCurrentValueToBound(false)
-		case r == 'L':
+		case r == 'L' || key == tcell.KeyPgDn:
 			self.color.ScrollCurrentValueToBound(true)
 
-		case r == 'j':
+		case r == 'j' || key == tcell.KeyDown:
 			self.color.ScrollValueIndex(+1)
-		case r == 'k':
+		case r == 'k' || key == tcell.KeyUp:
 			self.color.ScrollValueIndex(-1)
 
 		case r == 'i':
