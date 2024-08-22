@@ -13,45 +13,46 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 		self.termW, self.termH = ev.Size()
 		self.screen.Sync()
 	case *tcell.EventKey:
+        key, r := ev.Key(), ev.Rune()
 		switch {
-		case ev.Rune() == 'q' || ev.Key() == tcell.KeyCtrlC:
+		case r == 'q' || key == tcell.KeyCtrlC:
 			quit = true
-		case ev.Key() == tcell.KeyEnter:
+		case key == tcell.KeyEnter:
 			self.printOnExit = true
 			quit = true
 
-		case ev.Key() == tcell.KeyCtrlL:
+		case key == tcell.KeyCtrlL:
 			self.screen.Sync()
 
-		case ev.Rune() == 'h':
+		case r == 'h':
 			self.color.ScrollCurrentValue(-1)
-		case ev.Rune() == 'l':
+		case r == 'l':
 			self.color.ScrollCurrentValue(+1)
-		case ev.Rune() == 'b':
+		case r == 'b':
 			self.color.ScrollCurrentValue(-8)
-		case ev.Rune() == 'w':
+		case r == 'w':
 			self.color.ScrollCurrentValue(+8)
-		case ev.Rune() == '[':
+		case r == '[':
 			self.color.ScrollCurrentValue(-32)
-		case ev.Rune() == ']':
+		case r == ']':
 			self.color.ScrollCurrentValue(+32)
-		case ev.Rune() == 'H':
+		case r == 'H':
 			self.color.ScrollCurrentValueToBound(false)
-		case ev.Rune() == 'L':
+		case r == 'L':
 			self.color.ScrollCurrentValueToBound(true)
 
-		case ev.Rune() == 'j':
+		case r == 'j':
 			self.color.ScrollValueIndex(+1)
-		case ev.Rune() == 'k':
+		case r == 'k':
 			self.color.ScrollValueIndex(-1)
 
-		case ev.Rune() == 'i':
+		case r == 'i':
 			self.color.CycleInputModes()
 
-		case ev.Rune() == 'o':
+		case r == 'o':
 			self.color.CycleOutputModes()
 
-		case ev.Rune() == 'y':
+		case r == 'y':
 			c := self.color.Output()
 			go func() {
 				if err := clipboard.Set(c); err != nil {
@@ -59,7 +60,7 @@ func (self *app) handleEvent(ev tcell.Event) (quit bool) {
 				}
 			}()
 
-		case ev.Rune() == 'p':
+		case r == 'p':
 			if c, err := clipboard.Get(); err != nil {
 				log.Printf("error reading clipboard: %v", err)
 			} else if c != "" {
